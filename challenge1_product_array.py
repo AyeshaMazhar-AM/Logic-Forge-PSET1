@@ -24,7 +24,7 @@ def team_impact(contributions):
         left_product *= contributions[i]   #update left_product
     right_product = 1
     for i in range(ln-1, -1, -1):           #starts from end
-        impact[i] = right_product
+        impact[i] *= right_product
         right_product *= contributions[i]
     return impact
 

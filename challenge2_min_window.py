@@ -1,23 +1,34 @@
-def minWindowBrute(log, pattern):
+def minWindow(log, pattern):
     if not log or not pattern:
         return ""
-    
-    from collections import Counter
-    pattern_count = Counter(pattern)
-    min_len = float("inf")
-    sub_string = ""
 
-    n = len(log)
-    for i in range(n):
-        for j in range(i, n):
-            substring = log[i:j+1]
-            window_count = Counter(substring)
-            if all(window_count[c] >= pattern_count[c] for c in pattern_count):
-                if j - i + 1 < min_len:
-                    min_len = j - i + 1
-                    sub_string = substring
+    req = {}
+    for c in pattern:
+        req[c] = req.get(c, 0) + 1
+
+    window = {}
+    found = 0
+    left = 0
+    sub_string = ""
+    min_len = float("inf")
+
+    for right, char in enumerate(log):
+        window[char] = window.get(char, 0) + 1
+        if char in req and window[char] == req[char]:
+            found += 1
+        while found == len(req):
+            if right - left + 1 < min_len:
+                min_len = right - left + 1
+                sub_string = log[left:right+1]
+
+            window[log[left]] -= 1
+
+            if log[left] in req and window[log[left]] < req[log[left]]:
+                found -= 1
+            left += 1
 
     return sub_string
-print(minWindowBrute("ADOBECODEBANC", "ABC"))
-print(minWindowBrute("a", "a"))
-print(minWindowBrute("a", "aa"))
+
+print(minWindow("ADOBECODEBANC", "ABC"))
+print(minWindow("a", "a"))
+print(minWindow("a", "aa"))
